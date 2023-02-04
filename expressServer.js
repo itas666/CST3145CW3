@@ -57,14 +57,30 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
       res.json(result);
     });
   });
-
+/* PUT method to remove availability from the item received on the URL; removing the availability received in the "body" */
+/*app.put('/lessons/:id', (req, res, next) => {
+  console.log("Got lessons ");
+  db.collection('products').updateOne(
+    { _id: mongodb.ObjectId(req.params.id) },
+    { $inc: { availability: -req.body.availability } },
+    (err, result) => {
+      if (err) return next(err);
+      console.log("Got lessons results " + result)
+      res.json(result);
+    }
+  );
+});*/
   app.put('/lessons/:id', (req, res) => {
     const id = req.params.id;
     const updatedAvailability = req.body.space;
-    db.collection('lessons').updateOne({ _id: new mongodb.ObjectID(id) }, { $inc: { availability: -updatedAvailability } }, (err, result) => {
-      if (err) throw err;
-      res.status(200).json({ message: "Lesson availability updated successfully" });
-    });
+    db.collection('products').updateOne(
+      {_id: new mongodb.ObjectID(id) },
+      { $inc: { availability: -updatedAvailability } },
+      (err, result) => {
+        if (err) throw err;
+        res.status(200).json({ message: "Lesson availability updated successfully" });
+      }
+    );
   });
 
 
