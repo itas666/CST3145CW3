@@ -103,11 +103,11 @@ Maximum score5
     Also disable the default behaviour of the tab key
 -->
             <div class="searchBar" style="float: right;">
-                <input type="text" v-model="search" style="position: relative; top: 0px; right: 0px;" @keydown.tab.prevent="search = autocomplete" placeholder="Search for a product">
+                <input type="text" v-model="search" style="position: relative; top: 0px; right: 0px;" @keydown.tab.prevent="autocomplete()" placeholder="Search for a product">
 <!-- greyed out text for the vue autocomplete function - greyed out text over search bar -->
                 <div style="position: relative; top: 0px; right: -4px; color: #4b4b4bb8;">
 <!-- For each "searchResult" which will be an array, create a span with the appropriate result -->
-                    <span v-for="result in searchResult" style="display: inline-block; width: 100%; text-align: center;">
+                    <span v-for="result in searchResults" style="display: inline-block; width: 100%; text-align: center;">
                         {{ result }}
                     </span>
                 </div>

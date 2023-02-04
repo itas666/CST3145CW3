@@ -13,7 +13,8 @@ var shopApp = new Vue({
         shopStage: true,
         checkoutName: '',
         checkoutPhone: '',
-        search: ''
+        search: '',
+        searchResults: []
     },
     methods: {
 /* LOCAL METHODS */
