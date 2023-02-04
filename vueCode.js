@@ -111,6 +111,15 @@ the removeFromCart takes the index of the product, not the index of the cart */
         getCartCount: function () {
             return this.cart.quantity.reduce((sum, a) => sum + a, 0);;
         },
+/*
+    Autocomplete function that will be invoked when the users presses tab
+    it will select the top result saved on the searchResults array
+*/
+        autocomplete: function () {
+            if (this.searchResults.length > 0) {
+                this.search = this.searchResults[0].name;
+            }
+        },
 /* END OF LOCAL METHODS */
 /* REMOTE METHODS */
 /* Fetches the products from the remote server */
@@ -208,15 +217,6 @@ product array and starts with what is on the search variable */
                 .catch(error => {
                     console.log(error);
                 });
-            }
-        },
-/*
-    Autocomplete function that will be invoked when the users presses tab
-    it will select the top result saved on the searchResults array
-*/
-        autocomplete: function () {
-            if (this.searchResults.length > 0) {
-                this.search = this.searchResults[0].name;
             }
         }
     },
