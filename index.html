@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!--
+        A submission could receive zero marks if it fails any of the following requirements:
+
+the Vue.js App must be hosted on GitHub Pages and connected (via Fetch) to your AWS Express.js App; running it locally is not allowed;
+the Node/Express server must be hosted on Amazon AWS ( https://aws.amazon.com/ ); a local server is not allowed;
+the data must be stored in ‘MongoDB Atlas’ and retrieved via your Express.js App; local MongoDB or any other databases are not allowed;
+connection to MongoDB (in your Express.js App) must use the native Node.js driver only; libraries like Mongoose are not allowed.
+Submission
+
+Instructions for the text area to compile when uploading your submission
+
+- please, indicate the same information requested below for the README file
+
+Instructions for the zip file, it must contain the following elements, and must be no more than 10MB:
+
+your code in 2 folders respectively related to:
+your Vue.js App;
+your Express.js App (do not include the ’node_modules’ folder, otherwise, the zip will be too big to submit).
+a README file with the following links:
+[Vue.js App] the link to your GitHub Repository;
+[Vue.js App] the link to your GitHub Pages from where the app can directly run.
+[Express.js App] the link to your GitHub Repository;
+[AWS Express.js App] the link to the AWS route that returns all the lessons.
+the ‘lesson’ and the ‘order’ collections exported from your MongoDB Atlas. See here for how to export collection in MongoDB Compass (https://docs.mongodb.com/compass/current/import-export#export-data-from-a-collection).
+the requests you created in Postman. See here for how to export requests in Postman (https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#exporting-collections).
+MongoDB
+A. Have a MongoDB collection for lesson information (2%) - minimal fields: topic, price, location, and space
+B. Have a MongoDB collection for order information (2%) - minimal fields: name,
+phone number, lesson ID, and number of space.
+Maximum score4
+Middleware Functions
+A. Create a ‘logger’ middleware that output all requests to the server console (2%)
+B. Create a static file middleware that returns lesson images or an error message if the image file does not exist. (2%)
+Maximum score4
+REST API
+A. One GET route that returns all the lessons (2%)
+B. One POST route that saves a new order to the ‘order’ collection (2%);
+C. One PUT route that updates the number of available spaces in the ‘lesson’ collection after an order is submitted (2%).
+D. At least one Postman request is created for each route (2%).
+Maximum score8
+Fetch
+A. One fetch that retrieves all the lessons with GET (1%).
+B. One fetch that saves a new order with POST after it is submitted (1%).
+C. One fetch that updates the available lesson space with PUT after an order is submitted (2%).
+Maximum score4
+Search
+– This is the challenge component of this coursework, and it is not expected that everyone can complete it. The solution is not covered in the lecture or lab, so you need to research it.
+– The goal is to add a full-text search feature, similarly to the challenge component of the Coursework 1. The difference is that the search needs to be performed in the back end (Express + MongoDB), not in the front end as in Coursework 1 (where it was implemented via Vue + JavaScript). You will not receive any mark, for this part, if the search is performed in the front end.
+– You cannot use any existing library to implement this function. Otherwise, you will not receive any mark for this part.
+
+A. Fetch (2%): in the front end, a ‘fetch’ request should be created to send the search information to the back end.
+B. Express API (2%): an Express.js route should be created to handle the search request, and return the search results from the MongoDB.
+C. Search as you type (1%): similarly to Coursework 1, there is also this mark if the search supports ‘search as you type’, i.e. the search starts when user types the first letter (displaying all the lessons containing that letter), and the result list is filtered as more search letters are entered (similar to Google search).
+Maximum score5
+
+
+    -->
+    
+    <!-- Last Vue2, Vue3 uses different syntax -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+    <style>
+        .active{
+            font-weight: bold;
+        }
+        li:hover{
+            font-weight: bold;
+            cursor: pointer;
+        }
+        div.mainBody{
+            display: grid;
+            grid-template-columns: 20% 80%;
+            grid-template-rows: auto auto;
+            grid-template-areas:    "topBar     topBar"
+                                    "sidebar    contentContainer";
+        }
+        div.sidebar{
+            grid-area: sidebar;
+            background-color: #f1f1f1;
+            padding: 20px;
+        }
+        div.topBar{
+            grid-area: topBar;
+            padding: 20px;
+        }
+        div.contentContainer{
+            grid-area: contentContainer;
+            background-color: #f1f1f1;
+            padding: 20px;
+        }
+        div.contentContainer{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        div.container{
+            width: 500px;
+            background-color: #ffffff;
+            margin: 10px;
+            padding: 10px;
+        }
+        img{
+            height: 250px;
+        }
+        div.row div:first-of-type{
+            padding: auto;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            width: 100%;
+
+        }
+    </style>
+
+    <title>CST3145</title>
+</head>
+<body>
+
+    
+    <div id="shop" class="mainBody">
+        <div class="topBar">
+            <h1 style="float: left;">Quick lesson</h1>
+<!--
+    search bar for the vue product array; on tab key down, fill the text with the contents of the autocomplete computed function
+    Also disable the default behaviour of the tab key
+-->
+            <div class="searchBar" style="float: right;">
+                <input type="text" v-model="search" style="position: relative; top: 0px; right: 0px;" @keydown.tab.prevent="search = autocomplete" placeholder="Search for a product">
+<!-- greyed out text for the vue autocomplete function - greyed out text over search bar -->
+                <div style="position: relative; top: 0px; right: -4px; color: #4b4b4bb8;">
+                    {{autocomplete}}
+                </div>
+            </div>
+        </div>
+        <!-- sidebar to select the sorting for the products -->
+        <div class="sidebar" v-show="shopStage">
+            <h3>Sort by</h3>
+            <ul>
+<!-- sort by different fields -->
+                <li v-for="sort in sorts" v-bind:class="sort == selectedSort ? 'active' : 'inactive'" v-on:click="selectedSort = sort">
+                    {{ sort }} 
+                </li>
+                
+<!-- sort by ascending or descending order -->
+            </ul>
+            <ul>
+                <li v-bind:class="selectedOrder === 'ascending' ? 'active' : 'inactive'" v-on:click="selectedOrder = 'ascending'">
+                    Ascending
+                </li>
+                <li v-bind:class="selectedOrder === 'descending' ? 'active' : 'inactive'" v-on:click="selectedOrder = 'descending'">
+                    Descending
+                </li>
+            </ul>
+            
+            <!-- checkout button -->
+            <div class="row">
+                <div class="col-4">
+                    <button class="btn btn-primary" @click="checkout()" v-show="shopStage" v-if="canCheckout">Shopping Cart ({{getCartCount()}})</button>
+                    <button class="btn btn-primary" @click="checkout()" v-show="shopStage" v-else disabled>Shopping Cart (0)</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Total price and complete checkout process -->
+        <div class="sidebar" v-show="checkoutStage">
+            <div class="">
+                <h1>Checkout</h1>
+                <h2>Total price: {{cart.totalPrice}}</h2>
+                <!-- input texts for the checkout name and checkout phone in the vue application -->
+                <div class="form-group">
+                    <label for="checkoutName">Name</label>
+                    <input type="text" class="form-control" id="checkoutName" v-model="checkoutName">
+                    <label for="checkoutName">Phone</label>
+                    <input type="text" class="form-control" id="checkoutPhone" v-model="checkoutPhone">
+                </div>
+                <button class="btn btn-primary" @click="completeCheckout()" v-if="validateCheckout()" >Complete checkout</button>
+                <button class="btn btn-primary" @click="completeCheckout()" v-else disabled >Complete checkout</button>
+                <button class="btn btn-primary" @click="goBack()">Go Back</button>
+            </div>
+        </div>
+<!-- main content -->
+
+<!-- Vue for loop to get all products in our product array within vue and print them in the selected sort and selected order -->
+        <div class="contentContainer">
+            <div class="container" v-for="(item, index) in filteredProducts" v-show="shopStage">
+                <div class="row">
+                    <div>
+                        <img :src="item.image" alt="image">
+                    </div>
+                    <div class="col">
+                        <p><h3>Subject: {{item.name}}, {{item.location}}<span v-bind:class='item.icon'></span--></h3></p>
+                        <p>Price: {{item.price}}</p>
+                        <p>Availability: {{item.availability}}</p>
+                        <button class="btn btn-primary" @click="addToCart(index)" v-if="canAddToCart(index)" >Add to cart</button>
+                        <button class="btn btn-primary" @click="addToCart(index)" v-else disabled >Out of stock</button>
+                        <button class="btn btn-primary" @click="removeFromCart(index)">Remove from cart</button>
+                    </div>
+                    <div class="col">
+                        <p class="itemDescription"><h3>Description:</h3>{{item.description}}</p>
+                    </div>
+                </div>
+            </div>
+
+
+<!-- 
+    checkout reads the array of products inside the cart, and prints them with the quantity, multiplying the product price with the quantity to get each sum of prices
+ -->
+            <div id="checkout" v-show="checkoutStage">
+                <div class="contentContainer">
+                    <div class="container" v-for="(item, index) in cart.product">
+                        <div class="row">
+                            <div>
+                                <img :src="item.image" alt="image">
+                            </div>
+                            <div class="col">
+                                <p><h3>Subject: {{item.name}}, {{item.location}}<span v-class='item.icon'></span></h3></p>
+                                <p>Quantity: {{cart.quantity[index]}}</p>
+                                <p>Total price: {{item.price * cart.quantity[index]}}</p>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-primary" @click="removeFromCart(index)">Remove from cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="application/javascript" src="./products.js"></script>
+    <script type="application/javascript" src="./vueCode.js"></script>
+</body>
+</html>
