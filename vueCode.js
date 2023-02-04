@@ -96,7 +96,38 @@ the removeFromCart takes the index of the product, not the index of the cart */
         canAddToCart: function (index) {
             return this.product[index].availability > 0;
         },
-/*************** The checkout function just recreates the cart and empties it */
+/* VALIDATION METHODS - CLIENT SIDE */
+        validateName: function () {
+            return /^[a-zA-Z]+ [a-zA-Z]+$/.test(this.checkoutName);
+        },
+        validatePhone: function () {
+            return /^(\+44|0)7\d{9}$/.test(this.checkoutPhone);
+        },
+        validateCheckout: function () {
+            return this.validateName() && this.validatePhone();
+        },
+/* Takes the number of taken classes and returns the total price
+ THIS WILL NOT WORK AS COMPUTED, DOES NOT UPDATE */
+        getCartCount: function () {
+            return this.cart.quantity.reduce((sum, a) => sum + a, 0);;
+        },
+/* END OF LOCAL METHODS */
+/* REMOTE METHODS */
+/* Fetches the products from the remote server */
+        getLessons: function () {
+            this.loading = true;
+            fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
+            .then(response => response.json())
+            .then(data => {
+                this.product = data;
+                this.loading = false;
+            })
+            .catch(error => {
+                console.log(error);
+                this.loading = false;
+            });
+        },
+        /* The checkout function just recreates the cart and empties it */
         completeCheckout: async function () {
             const orderDetails = {
                 customerName: this.checkoutName,
@@ -132,62 +163,6 @@ the removeFromCart takes the index of the product, not the index of the cart */
             this.cart = {product: [], quantity: [], totalPrice: 0};
             alert('Thank you for your purchase!');
             this.goBack();
-        },
-/* VALIDATION METHODS - CLIENT SIDE */
-        validateName: function () {
-            return /^[a-zA-Z]+ [a-zA-Z]+$/.test(this.checkoutName);
-        },
-        validatePhone: function () {
-            return /^(\+44|0)7\d{9}$/.test(this.checkoutPhone);
-        },
-        validateCheckout: function () {
-            return this.validateName() && this.validatePhone();
-        },
-/* Takes the number of taken classes and returns the total price
- THIS WILL NOT WORK AS COMPUTED, DOES NOT UPDATE */
-        getCartCount: function () {
-            return this.cart.quantity.reduce((sum, a) => sum + a, 0);;
-        },
-/* END OF LOCAL METHODS */
-/* REMOTE METHODS */
-/* Fetches the products from the remote server */
-        getLessons: function () {
-            this.loading = true;
-            fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
-            .then(response => response.json())
-            .then(data => {
-                this.product = data;
-                this.loading = false;
-            })
-            .catch(error => {
-                console.log(error);
-                this.loading = false;
-            });
-        },
-/* POST function to send the checkout data to the server; it also updates the items in the cart
-and updates their availability */
-        postCheckout: function () {
-            this.loading = true;
-            fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: this.checkoutName,
-                    phone: this.checkoutPhone,
-                    cart: this.cart
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                this.loading = false;
-                this.completeCheckout();
-            })
-            .catch(error => {
-                console.log(error);
-                this.loading = false;
-            });
         }
     },
     computed: {
@@ -218,15 +193,33 @@ product array and starts with what is on the search variable */
                 return false;
             });
         },
-/* autocomplete for the search bar; if search is empty, do not return anything
-when search has any data, return the first name of a product returned */
-        autocomplete: function () {
-            if (this.search == '') {
-                return '';
-            } else if (this.filteredProducts.length > 0) {
-                return this.filteredProducts[0].name;
+/*
+    Function to send a "get" request to the server to search for orders on the "/lessons/search/:query/:limit"
+    endpoint. The query is the search term and the limit is the number of results to return.
+    The server will return an array with results that we will show in a dropdown for the autocomplete.
+*/
+        searchResults: function () {
+            if (this.search.length > 0) {
+                fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.search}/5`)
+                .then(response => response.json())
+                .then(data => {
+                    this.searchResults = data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
             }
-            return '';
+        }
+    },
+/*
+    Autocomplete function that will be invoked when the users presses tab
+    it will select the top result saved on the searchResults array
+*/
+    methods: {
+        autocomplete: function () {
+            if (this.searchResults.length > 0) {
+                this.search = this.searchResults[0].name;
+            }
         }
     },
     mounted: function () {
