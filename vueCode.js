@@ -118,7 +118,7 @@ the removeFromCart takes the index of the product, not the index of the cart */
         
             for (let i = 0; i < this.cart.product.length; i++) {
                 const product = this.cart.product[i];
-                const availability = product.availability - this.cart.quantity[i];
+                const availability = product.availability;
                 await fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/${product._id}`, {
                     method: "PUT",
                     headers: {
