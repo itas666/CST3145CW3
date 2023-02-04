@@ -57,6 +57,38 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
   });
 });
 
+app.put('/lessons/:id', (req, res) => {
+  const id = req.params.id;
+  const updatedSpace = req.body.space;
+  db.collection('lessons').updateOne({ _id: new mongodb.ObjectID(id) }, { $inc: { space: -updatedSpace } }, (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: "Lesson space updated successfully" });
+  });
+});
+
+app.post('/orders', (req, res) => {
+  const order = req.body;
+  db.collection('orders').insertOne(order, (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: "Order created successfully" });
+  });
+});
+
+app.get('/lessons/search/:query/:limit', (req, res) => {
+  const query = req.params.query;
+  const limit = parseInt(req.params.limit);
+  db.collection('lessons').find(
+    { $text: { $search: query } },
+    { score: { $meta: "textScore" } }
+  )
+  .sort({ score: { $meta: "textScore" } })
+  .limit(limit)
+  .toArray((err, result) => {
+    if (err) throw err;
+    res.json(result);
+  });
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log('Server listening on port: ' + port);
