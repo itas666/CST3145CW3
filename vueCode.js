@@ -141,7 +141,7 @@ when search has any data, return the first name of a product returned */
     },
     mounted: function () {
         this.loading = true;
-        fetch('http://localhost:3000/lessons')
+        fetch('http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
         .then(response => response.json())
         .then(data => {
             this.product = data;
@@ -154,7 +154,7 @@ when search has any data, return the first name of a product returned */
     },
     function () {
         this.loading = true;
-        fetch('http://localhost:3000/users')
+        fetch('http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/users')
         .then(response => response.json())
         .then(data => {
             this.users = data;
