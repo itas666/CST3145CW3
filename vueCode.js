@@ -16,6 +16,7 @@ var shopApp = new Vue({
         search: ''
     },
     methods: {
+/* LOCAL METHODS */
 /* Adds a single product to the cart, if it exists, it increases the quantity by one and does not push the item */
         addToCart: function (index) {
             if(this.canAddToCart(index)){
@@ -30,7 +31,8 @@ var shopApp = new Vue({
             }
             this.$forceUpdate();
         },
-/* Adds a single product to the cart, if it exists, it increases the quantity by one and does not push the item */
+/* Adds a single product to the cart,
+if it exists, it increases the quantity by one and does not push the item */
         getData: function (index) {
             if(this.canAddToCart(index)){
                 if (this.cart.product.indexOf(this.product[index]) == -1) {
@@ -61,6 +63,7 @@ if it is the last product to be removed, also remove the entry from the carts pr
             }
             this.$forceUpdate();
         },
+/* Helper function to check if we can remove from cart */
         canRemoveFromCart: function (index) {
             var cartIndex = this.cart.product.indexOf(this.product[index]);
             if(cartIndex != -1) {
@@ -79,12 +82,12 @@ the removeFromCart takes the index of the product, not the index of the cart */
                 }
             }
         },
-/* Clears the cart, prompts a message thanking for the purchase but does not return the availability to the items */
+/****************** Clears the cart, prompts a message thanking for the purchase but does not return the availability to the items */
         checkout: function () {
             this.checkoutStage = true;
             this.shopStage = false;
         },
-        
+/* Navigation function */
         goBack: function () {
             this.checkoutStage = false;
             this.shopStage = true;
@@ -93,12 +96,13 @@ the removeFromCart takes the index of the product, not the index of the cart */
         canAddToCart: function (index) {
             return this.product[index].availability > 0;
         },
-/* The checkout function just recreates the cart and empties it */
+/*************** The checkout function just recreates the cart and empties it */
         completeCheckout: function () {
             this.cart = {product: [], quantity: [], totalPrice: 0};
             alert('Thank you for your purchase!');
             this.goBack();
         },
+/* VALIDATION METHODS - CLIENT SIDE */
         validateName: function () {
             return /^[a-zA-Z]+ [a-zA-Z]+$/.test(this.checkoutName);
         },
@@ -112,6 +116,47 @@ the removeFromCart takes the index of the product, not the index of the cart */
  THIS WILL NOT WORK AS COMPUTED, DOES NOT UPDATE */
         getCartCount: function () {
             return this.cart.quantity.reduce((sum, a) => sum + a, 0);;
+        },
+/* END OF LOCAL METHODS */
+/* REMOTE METHODS */
+/* Fetches the products from the remote server */
+        getLessons: function () {
+            this.loading = true;
+            fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
+            .then(response => response.json())
+            .then(data => {
+                this.product = data;
+                this.loading = false;
+            })
+            .catch(error => {
+                console.log(error);
+                this.loading = false;
+            });
+        },
+/* POST function to send the checkout data to the server; it also updates the items in the cart
+and updates their availability */
+        postCheckout: function () {
+            this.loading = true;
+            fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: this.checkoutName,
+                    phone: this.checkoutPhone,
+                    cart: this.cart
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.loading = false;
+                this.completeCheckout();
+            })
+            .catch(error => {
+                console.log(error);
+                this.loading = false;
+            });
         }
     },
     computed: {
@@ -154,29 +199,6 @@ when search has any data, return the first name of a product returned */
         }
     },
     mounted: function () {
-        this.loading = true;
-        fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
-        .then(response => response.json())
-        .then(data => {
-            this.product = data;
-            this.loading = false;
-        })
-        .catch(error => {
-            console.log(error);
-            this.loading = false;
-        });
-    },
-    function () {
-        this.loading = true;
-        fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/users')
-        .then(response => response.json())
-        .then(data => {
-            this.users = data;
-            this.loading = false;
-        })
-        .catch(error => {
-            console.log(error);
-            this.loading = false;
-        });
+        this.getLessons();
     }
 });
