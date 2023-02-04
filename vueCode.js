@@ -96,6 +96,40 @@ the removeFromCart takes the index of the product, not the index of the cart */
         canAddToCart: function (index) {
             return this.product[index].availability > 0;
         },
+/*  */
+  async createOrderAndUpdateAvailability() {
+    const orderDetails = {
+      customerName: this.checkoutName,
+      customerPhone: this.checkoutPhone,
+      items: this.cart.product.map((item, index) => ({
+        productId: item._id,
+        quantity: this.cart.quantity[index]
+      })),
+      total: this.cart.totalPrice
+    };
+  
+    await fetch("http://localhost:3000/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(orderDetails)
+    });
+  
+    for (let i = 0; i < this.cart.product.length; i++) {
+      const product = this.cart.product[i];
+      const availability = product.availability - this.cart.quantity[i];
+      await fetch(`http://localhost:3000/api/products/${product._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          availability
+        })
+      });
+    }
+  },  
 /*************** The checkout function just recreates the cart and empties it */
         completeCheckout: function () {
             this.cart = {product: [], quantity: [], totalPrice: 0};

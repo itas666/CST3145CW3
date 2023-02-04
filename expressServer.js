@@ -35,42 +35,35 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
 
   app.param('collectionName'
     , function(req, res, next, collectionName) {
-      console.log("got collectionName: " + collectionName + "");
+      console.log("Got collectionName: " + collectionName + "");
       req.collection = db.collection(collectionName);
       return next();
   });
 
   app.get('/lessons', (req, res, next) => {
-    console.log("got lessons ");
+    console.log("Got lessons ");
     db.collection('products').find({}).toArray((err, result) => {
       if (err) return next(err);
-      console.log("got lessons results " + result)
+      console.log("Got lessons results " + result)
       res.json(result);
     });
   });
 
   app.put('/lessons/:id', (req, res) => {
     const id = req.params.id;
-    const updatedSpace = req.body.space;
-    db.collection('lessons').updateOne({ _id: new mongodb.ObjectID(id) }, { $inc: { space: -updatedSpace } }, (err, result) => {
+    const updatedAvailability = req.body.space;
+    db.collection('lessons').updateOne({ _id: new mongodb.ObjectID(id) }, { $inc: { availability: -updatedAvailability } }, (err, result) => {
       if (err) throw err;
-      res.status(200).json({ message: "Lesson space updated successfully" });
+      res.status(200).json({ message: "Lesson availability updated successfully" });
     });
   });
 /* POST listener to create an order on MongoDB - Needs to update each item's availability */
   app.post('/orders', (req, res) => {
     const order = req.body;
-    db.collection('products').updateOne(
-      { _id: order.productId },
-      { $inc: { availability: -order.quantity } },
-      (err, result) => {
-        if (err) throw err;
-        db.collection('orders').insertOne(order, (err, result) => {
-          if (err) throw err;
-          res.status(200).json({ message: "Order created successfully" });
-        });
-      }
-    );
+    db.collection('orders').insertOne(order, (err, result) => {
+      if (err) throw err;
+      res.status(200).json({ message: "Order created successfully" });
+    });
   });
 
 
