@@ -75,7 +75,7 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
     const updatedAvailability = req.body.availability;
     db.collection('products').updateOne(
       {_id: new mongodb.ObjectID(id) },
-      { $inc: { availability: -updatedAvailability } },
+      { $inc: { availability: updatedAvailability } },
       (err, result) => {
         if (err) throw err;
         res.status(200).json({ message: "Lesson availability updated successfully" });
