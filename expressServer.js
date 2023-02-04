@@ -49,6 +49,15 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
     });
   });
 
+  app.get('/orders', (req, res, next) => {
+    console.log("Got orders ");
+    db.collection('orders').find({}).toArray((err, result) => {
+      if (err) return next(err);
+      console.log("Got orders results " + result)
+      res.json(result);
+    });
+  });
+
   app.put('/lessons/:id', (req, res) => {
     const id = req.params.id;
     const updatedAvailability = req.body.space;
@@ -57,6 +66,8 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
       res.status(200).json({ message: "Lesson availability updated successfully" });
     });
   });
+
+
 /* POST listener to create an order on MongoDB - Needs to update each item's availability */
   app.post('/orders', (req, res) => {
     const order = req.body;

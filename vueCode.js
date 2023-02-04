@@ -108,7 +108,7 @@ the removeFromCart takes the index of the product, not the index of the cart */
             total: this.cart.totalPrice
             };
         
-            await fetch("http://localhost:3000/api/orders", {
+            await fetch("https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/orders", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -119,13 +119,13 @@ the removeFromCart takes the index of the product, not the index of the cart */
             for (let i = 0; i < this.cart.product.length; i++) {
             const product = this.cart.product[i];
             const availability = product.availability - this.cart.quantity[i];
-            await fetch(`http://localhost:3000/api/products/${product._id}`, {
+            await fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/${product._id}`, {
                 method: "PUT",
                 headers: {
                 "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                availability
+                    availability
                 })
             });
             }
