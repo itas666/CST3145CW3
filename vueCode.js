@@ -30,6 +30,20 @@ var shopApp = new Vue({
             }
             this.$forceUpdate();
         },
+/* Adds a single product to the cart, if it exists, it increases the quantity by one and does not push the item */
+        getData: function (index) {
+            if(this.canAddToCart(index)){
+                if (this.cart.product.indexOf(this.product[index]) == -1) {
+                    this.cart.product.push(this.product[index]);
+                    this.cart.quantity.push(1);
+                } else {
+                    this.cart.quantity[this.cart.product.indexOf(this.product[index])] += 1;
+                }
+                this.product[index].availability -= 1;
+                this.cart.totalPrice += this.product[index].price;
+            }
+            this.$forceUpdate();
+        },
 /* Removes a single item from the cart and adds the availability back to the product list,
 if it is the last product to be removed, also remove the entry from the carts products */
         removeFromCart: function (index) {
@@ -141,7 +155,7 @@ when search has any data, return the first name of a product returned */
     },
     mounted: function () {
         this.loading = true;
-        fetch('http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
+        fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
         .then(response => response.json())
         .then(data => {
             this.product = data;
@@ -154,7 +168,7 @@ when search has any data, return the first name of a product returned */
     },
     function () {
         this.loading = true;
-        fetch('http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/users')
+        fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/users')
         .then(response => response.json())
         .then(data => {
             this.users = data;
