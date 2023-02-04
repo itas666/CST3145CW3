@@ -57,31 +57,21 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
       res.json(result);
     });
   });
-/* PUT method to remove availability from the item received on the URL; removing the availability received in the "body" */
-/*app.put('/lessons/:id', (req, res, next) => {
-  console.log("Got lessons ");
-  db.collection('products').updateOne(
-    { _id: mongodb.ObjectId(req.params.id) },
-    { $inc: { availability: -req.body.availability } },
-    (err, result) => {
-      if (err) return next(err);
-      console.log("Got lessons results " + result)
-      res.json(result);
-    }
-  );
-});*/
-  app.put('/lessons/:id', (req, res) => {
-    const id = req.params.id;
-    const updatedAvailability = req.body.availability;
+/* PUT method to set availability on the item received on the URL;
+the new availability is received in the "body" */
+  app.put('/lessons/:id', (req, res, next) => {
+    console.log("Got lessons ");
     db.collection('products').updateOne(
-      {_id: new mongodb.ObjectID(id) },
-      { $inc: { availability: updatedAvailability } },
+      { _id: mongodb.ObjectId(req.params.id) },
+      { $set: { availability: req.body.availability } },
       (err, result) => {
-        if (err) throw err;
-        res.status(200).json({ message: "Lesson availability updated successfully" });
+        if (err) return next(err);
+        res.json(result);
       }
     );
   });
+  
+
 
 
 /* POST listener to create an order on MongoDB - Needs to update each item's availability */
