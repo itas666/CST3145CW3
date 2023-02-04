@@ -209,13 +209,11 @@ product array and starts with what is on the search variable */
                     console.log(error);
                 });
             }
-        }
-    },
+        },
 /*
     Autocomplete function that will be invoked when the users presses tab
     it will select the top result saved on the searchResults array
 */
-    methods: {
         autocomplete: function () {
             if (this.searchResults.length > 0) {
                 this.search = this.searchResults[0].name;
