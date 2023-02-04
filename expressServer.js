@@ -72,7 +72,7 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
 });*/
   app.put('/lessons/:id', (req, res) => {
     const id = req.params.id;
-    const updatedAvailability = req.body.space;
+    const updatedAvailability = req.body.availability;
     db.collection('products').updateOne(
       {_id: new mongodb.ObjectID(id) },
       { $inc: { availability: -updatedAvailability } },
