@@ -26,42 +26,36 @@ MongoClient.connect(uri, { useNewUrlParser: true, serverApi: mongodb.ServerApiVe
 
   app.use(express.json());
 
+  // Logging Middleware
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    console.log(`Request Body: ${JSON.stringify(req.body)}`);
+    next();
+  });
+
   app.param('collectionName'
     , function(req, res, next, collectionName) {
-      console.log("Got collectionName: " + collectionName + "");
+      console.log("got collectionName: " + collectionName + "");
       req.collection = db.collection(collectionName);
       return next();
   });
 
-
-
-
-
-
-
   app.get('/lessons', (req, res, next) => {
-    console.log("Got lessons ");
+    console.log("got lessons ");
     db.collection('products').find({}).toArray((err, result) => {
       if (err) return next(err);
-      console.log("Got lessons results " + result)
+      console.log("got lessons results " + result)
       res.json(result);
     });
   });
-
-
-
 
   app.get('/users', (req, res) => {
     db.collection('users').find({}).toArray((err, result) => {
         if (err) throw err;
         res.json(result);
-        console.log(4);
     });
   });
 });
-
-
-
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
