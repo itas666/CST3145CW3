@@ -118,7 +118,7 @@ the removeFromCart takes the index of the product, not the index of the cart */
 */
         autocomplete: function () {
             if (this.searchResults.length > 0) {
-                this.search = this.searchResults[0].name;
+                this.searchBarData = this.searchResults[0].name;
             }
         },
 /* END OF LOCAL METHODS */
@@ -194,10 +194,10 @@ Idea from: https://stackoverflow.com/questions/42883835/sort-an-array-in-vue-js 
 product array and starts with what is on the search variable */
         filteredProducts: function () {
             return this.sortedProducts.filter((product) => {
-                if(product.name.toLowerCase().startsWith(this.search.toLowerCase())
-                    || product.description.toLowerCase().includes(this.search.toLowerCase())
-                    || product.location.toLowerCase().startsWith(this.search.toLowerCase())
-                    || (product.price >= parseInt(this.search)) || (product.availability >= parseInt(this.search))) {
+                if(product.name.toLowerCase().startsWith(this.searchBarData.toLowerCase())
+                    || product.description.toLowerCase().includes(this.searchBarData.toLowerCase())
+                    || product.location.toLowerCase().startsWith(this.searchBarData.toLowerCase())
+                    || (product.price >= parseInt(this.searchBarData)) || (product.availability >= parseInt(this.searchBarData))) {
                         return true;
                     }
                 return false;
