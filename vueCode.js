@@ -14,7 +14,8 @@ var shopApp = new Vue({
         checkoutName: '',
         checkoutPhone: '',
         searchBarData: '',
-        searchResults: []
+        searchResults: [],
+        filteredProducts: []
     },
     methods: {
 /* LOCAL METHODS */
