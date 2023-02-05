@@ -171,7 +171,7 @@ filtered as more search letters are entered (similar to Google search).
 
 <!-- Vue for loop to get all products in our product array within vue and print them in the selected sort and selected order -->
         <div class="contentContainer">
-            <div class="container" v-for="(item, index) in filteredProducts" v-show="shopStage">
+            <div class="container" v-for="(item, index) in sortedProducts" v-show="shopStage">
                 <div class="row">
                     <div>
                         <img :src="item.image" alt="image">
