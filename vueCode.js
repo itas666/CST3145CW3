@@ -194,10 +194,8 @@ Idea from: https://stackoverflow.com/questions/42883835/sort-an-array-in-vue-js 
 product array and starts with what is on the search variable */
         filteredProducts: function () {
             return this.sortedProducts.filter((product) => {
-                if(product.name.toLowerCase().startsWith(this.searchBarData.toLowerCase())
-                    || product.description.toLowerCase().includes(this.searchBarData.toLowerCase())
-                    || product.location.toLowerCase().startsWith(this.searchBarData.toLowerCase())
-                    || (product.price >= parseInt(this.searchBarData)) || (product.availability >= parseInt(this.searchBarData))) {
+                if(product.name.startsWith(this.searchBarData.toLowerCase())
+                    || (product.price >= parseInt(this.searchBarData))) {
                         return true;
                     }
                 return false;
