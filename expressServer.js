@@ -70,7 +70,7 @@ the new availability is received in the "body" */
       }
     );
   });
-  
+
 
 
 
@@ -87,7 +87,7 @@ the new availability is received in the "body" */
   app.get('/lessons/search/:query/:limit', (req, res) => {
     const query = req.params.query;
     const limit = parseInt(req.params.limit);
-    db.collection('lessons').find(
+    db.collection('products').find(
       { $text: { $search: query } },
       { score: { $meta: "textScore" } }
     )

@@ -13,7 +13,7 @@ var shopApp = new Vue({
         shopStage: true,
         checkoutName: '',
         checkoutPhone: '',
-        search: '',
+        searchBarData: '',
         searchResults: []
     },
     methods: {
@@ -208,9 +208,9 @@ product array and starts with what is on the search variable */
     endpoint. The query is the search term and the limit is the number of results to return.
     The server will return an array with results that we will show in a dropdown for the autocomplete.
 */
-        searchResults: function () {
-            if (this.search.length > 0) {
-                fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.search}/5`)
+        search: function () {
+            if (this.searchBarData.length > 0) {
+                fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.searchBarData}/5`)
                 .then(response => response.json())
                 .then(data => {
                     this.searchResults = data;
