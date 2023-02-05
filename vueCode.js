@@ -190,19 +190,6 @@ Idea from: https://stackoverflow.com/questions/42883835/sort-an-array-in-vue-js 
                 }
             });
         },
-/* Filtering function for the search bar according to what we have on the
-product array and starts with what is on the search variable */
-        filteredProducts: function () {
-            return this.sortedProducts.filter((product) => {
-                if(product.name.toLowerCase().startsWith(this.searchBarData.toLowerCase())
-                    || product.description.toLowerCase().includes(this.searchBarData.toLowerCase())
-                    || product.location.toLowerCase().startsWith(this.searchBarData.toLowerCase())
-                    || (product.price >= parseInt(this.searchBarData)) || (product.availability >= parseInt(this.searchBarData))) {
-                        return true;
-                    }
-                return false;
-            });
-        },
 /*
     Function to send a "get" request to the server to search for orders on the "/lessons/search/:query/:limit"
     endpoint. The query is the search term and the limit is the number of results to return.
@@ -223,6 +210,19 @@ product array and starts with what is on the search variable */
                 this.searchResults = [];
                 this.getLessons();
             }
+        },
+/* Filtering function for the search bar according to what we have on the
+product array and starts with what is on the search variable */
+        filteredProducts: function () {
+            return this.sortedProducts.filter((product) => {
+                if(product.name.toLowerCase().startsWith(this.searchBarData.toLowerCase())
+                    || product.description.toLowerCase().includes(this.searchBarData.toLowerCase())
+                    || product.location.toLowerCase().startsWith(this.searchBarData.toLowerCase())
+                    || (product.price >= parseInt(this.searchBarData)) || (product.availability >= parseInt(this.searchBarData))) {
+                        return true;
+                    }
+                return false;
+            });
         }
     },
     mounted: function () {
