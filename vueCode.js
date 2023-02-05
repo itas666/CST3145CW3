@@ -191,7 +191,7 @@ Idea from: https://stackoverflow.com/questions/42883835/sort-an-array-in-vue-js 
             });
         },
 /* Filtering function for the search bar according to what we have on the
-product array and starts with what is on the search variable 
+product array and starts with what is on the search variable */
         filteredProducts: function () {
             return this.sortedProducts.filter((product) => {
                 if(product.name.toLowerCase().startsWith(this.searchBarData.toLowerCase())
@@ -202,7 +202,7 @@ product array and starts with what is on the search variable
                     }
                 return false;
             });
-        },*/
+        },
 /*
     Function to send a "get" request to the server to search for orders on the "/lessons/search/:query/:limit"
     endpoint. The query is the search term and the limit is the number of results to return.
