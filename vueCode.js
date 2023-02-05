@@ -213,9 +213,8 @@ product array and starts with what is on the search variable
                 fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.searchBarData}/5`)
                 .then(response => response.json())
                 .then(data => {
-                    // put into searchResults array all the names from the received results
                     this.searchResults = data.map(item => item.name);
-                    this.product = data;
+                    this.product = data.map(item => item);
                 })
                 .catch(error => {
                     console.log(error);
