@@ -219,6 +219,9 @@ product array and starts with what is on the search variable
                 .catch(error => {
                     console.log(error);
                 });
+            }else{
+                this.searchResults = [];
+                this.getLessons();
             }
         }
     },
