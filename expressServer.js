@@ -83,7 +83,21 @@ the new availability is received in the "body" */
     });
   });
 
+  app.get('/lessons/search/:query/:limit', (req, res) => {
+    const query = req.params.query;
+    const limit = parseInt(req.params.limit);
+    db.collection('products').find(
+      { name: { $regex: query, $options: 'i' } }
+    )
+    .limit(limit)
+    .toArray((err, result) => {
+      if (err) throw err;
+      const names = result.map(product => product.name);
+      res.json(names);
+    });
+  });
 
+/*
   app.get('/lessons/search/:query/:limit', (req, res) => {
     const query = req.params.query;
     const limit = parseInt(req.params.limit);
@@ -98,6 +112,7 @@ the new availability is received in the "body" */
       res.json(result);
     });
   });
+  */
 
   const port = process.env.PORT || 3000;
 
