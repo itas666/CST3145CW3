@@ -83,7 +83,7 @@ the removeFromCart takes the index of the product, not the index of the cart */
                 }
             }
         },
-/****************** Clears the cart, prompts a message thanking for the purchase but does not return the availability to the items */
+/* Clears the cart, prompts a message thanking for the purchase but does not return the availability to the items */
         checkout: function () {
             this.checkoutStage = true;
             this.shopStage = false;
@@ -191,16 +191,18 @@ Idea from: https://stackoverflow.com/questions/42883835/sort-an-array-in-vue-js 
             });
         },
 /* Filtering function for the search bar according to what we have on the
-product array and starts with what is on the search variable */
+product array and starts with what is on the search variable 
         filteredProducts: function () {
             return this.sortedProducts.filter((product) => {
-                if(product.name.startsWith(this.searchBarData.toLowerCase())
-                    || (product.price >= parseInt(this.searchBarData))) {
+                if(product.name.toLowerCase().startsWith(this.searchBarData.toLowerCase())
+                    || product.description.toLowerCase().includes(this.searchBarData.toLowerCase())
+                    || product.location.toLowerCase().startsWith(this.searchBarData.toLowerCase())
+                    || (product.price >= parseInt(this.searchBarData)) || (product.availability >= parseInt(this.searchBarData))) {
                         return true;
                     }
                 return false;
             });
-        },
+        },*/
 /*
     Function to send a "get" request to the server to search for orders on the "/lessons/search/:query/:limit"
     endpoint. The query is the search term and the limit is the number of results to return.
@@ -211,7 +213,9 @@ product array and starts with what is on the search variable */
                 fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.searchBarData}/5`)
                 .then(response => response.json())
                 .then(data => {
-                    this.searchResults = data;
+                    // put into searchResults array all the names from the received results
+                    this.searchResults = data.map(item => item.name);
+                    this.product = data;
                 })
                 .catch(error => {
                     console.log(error);

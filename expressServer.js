@@ -92,8 +92,8 @@ the new availability is received in the "body" */
     .limit(limit)
     .toArray((err, result) => {
       if (err) throw err;
-      const names = result.map(product => product.name);
-      res.json(names);
+      //const names = result.map(product => product.name);
+      res.json(result);
     });
   });
 
