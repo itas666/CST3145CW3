@@ -1,33 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!--
-
-        
-D. At least one Postman request is created for each route (2%).
-
-
-Search
-– This is the challenge component of this coursework, and it is not expected that everyone can complete it.
-The solution is not covered in the lecture or lab, so you need to research it.
-– The goal is to add a full-text search feature, similarly to the challenge component of the Coursework 1.
-The difference is that the search needs to be performed in the back end (Express + MongoDB),
-not in the front end as in Coursework 1 (where it was implemented via Vue + JavaScript).
-– You cannot use any existing library to implement this function. Otherwise, you will not
-receive any mark for this part.
-
-A. Fetch (2%): in the front end, a ‘fetch’ request should be created to send the search information
-to the back end.
-B. Express API (2%): an Express.js route should be created to handle the search request, and return
-the search results from the MongoDB.
-C. Search as you type (1%): similarly to Coursework 1, there is also this mark if the search supports
-‘search as you type’, i.e. the search starts when user types the first letter
-(displaying all the lessons containing that letter), and the result list is
-filtered as more search letters are entered (similar to Google search).
-
-
-    -->
-    
     <!-- Last Vue2, Vue3 uses different syntax -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- Required meta tags -->
@@ -101,9 +74,16 @@ filtered as more search letters are entered (similar to Google search).
     <title>CST3145</title>
 </head>
 <body>
-
+    <div id="app"></div>
     
-    <div id="shop" class="mainBody">
+    <script type="application/javascript" src="./products.js"></script>
+    <script src="CheckoutComponent.js"></script>
+    <script src="ProductListComponent.js"></script>
+    <script type="application/javascript">
+
+            const App = {
+                template: `
+                <div>
         <div class="topBar">
             <h1 style="float: left;">Quick lesson</h1>
 <!--
@@ -111,112 +91,144 @@ filtered as more search letters are entered (similar to Google search).
     Also disable the default behaviour of the tab key
 -->
             <div class="searchBar" style="float: right;">
-                <input type="text" v-model="searchBarData" style="position: relative; top: 0px; right: 0px;" @keydown.tab.prevent="autocomplete()" placeholder="Search for a product">
+                <input type="text" v-model="searchQuery" style="position: relative; top: 0px; right: 0px;" @keydown.tab.prevent="autocomplete()" placeholder="Search for a product">
 <!-- greyed out text for the vue autocomplete function - greyed out text over search bar -->
                 <div style="position: relative; top: 0px; right: -4px; color: #4b4b4bb8;">
 <!-- For each "searchResult" which will be an array, create a span with the appropriate result -->
-                    <span v-for="result in searchResults" style="display: inline-block; width: 100%; text-align: center;">
-                        {{ result }}
-                    </span>
+                    <!--span v-for="result in searchResults" style="display: inline-block; width: 100%; text-align: center;">
+                    ADD THING
+                    </span-->
                 </div>
             </div>
         </div>
-        <!-- sidebar to select the sorting for the products -->
-        <div class="sidebar" v-show="shopStage">
-            <h3>Sort by</h3>
-            <ul>
-<!-- sort by different fields -->
-                <li v-for="sort in sorts" v-bind:class="sort == selectedSort ? 'active' : 'inactive'" v-on:click="selectedSort = sort">
-                    {{ sort }} 
-                </li>
-                
-<!-- sort by ascending or descending order -->
-            </ul>
-            <ul>
-                <li v-bind:class="selectedOrder === 'ascending' ? 'active' : 'inactive'" v-on:click="selectedOrder = 'ascending'">
-                    Ascending
-                </li>
-                <li v-bind:class="selectedOrder === 'descending' ? 'active' : 'inactive'" v-on:click="selectedOrder = 'descending'">
-                    Descending
-                </li>
-            </ul>
-            
-            <!-- checkout button -->
-            <div class="row">
-                <div class="col-4">
-                    <button class="btn btn-primary" @click="checkout()" v-show="shopStage" v-if="canCheckout">Shopping Cart ({{getCartCount()}})</button>
-                    <button class="btn btn-primary" @click="checkout()" v-show="shopStage" v-else disabled>Shopping Cart (0)</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Total price and complete checkout process -->
-        <div class="sidebar" v-show="checkoutStage">
-            <div class="">
-                <h1>Checkout</h1>
-                <h2>Total price: {{cart.totalPrice}}</h2>
-                <!-- input texts for the checkout name and checkout phone in the vue application -->
-                <div class="form-group">
-                    <label for="checkoutName">Name</label>
-                    <input type="text" class="form-control" id="checkoutName" v-model="checkoutName">
-                    <label for="checkoutName">Phone</label>
-                    <input type="text" class="form-control" id="checkoutPhone" v-model="checkoutPhone">
-                </div>
-                <button class="btn btn-primary" @click="completeCheckout()" v-if="validateCheckout()" >Complete checkout</button>
-                <button class="btn btn-primary" @click="completeCheckout()" v-else disabled >Complete checkout</button>
-                <button class="btn btn-primary" @click="goBack()">Go Back</button>
-            </div>
-        </div>
-<!-- main content -->
-
-<!-- Vue for loop to get all products in our product array within vue and print them in the selected sort and selected order -->
-        <div class="contentContainer">
-            <div class="container" v-for="(item, index) in sortedProducts" v-show="shopStage">
-                <div class="row">
                     <div>
-                        <img :src="item.image" alt="image">
-                    </div>
-                    <div class="col">
-                        <p><h3>Subject: {{item.name}}, {{item.location}}<span v-bind:class='item.icon'></span--></h3></p>
-                        <p>Price: {{item.price}}</p>
-                        <p>Availability: {{item.availability}}</p>
-                        <button class="btn btn-primary" @click="addToCart(index)" v-if="canAddToCart(index)" >Add to cart</button>
-                        <button class="btn btn-primary" @click="addToCart(index)" v-else disabled >Out of stock</button>
-                        <button class="btn btn-primary" @click="removeFromCart(index)">Remove from cart</button>
-                    </div>
-                    <div class="col">
-                        <p class="itemDescription"><h3>Description:</h3>{{item.description}}</p>
-                    </div>
+                    <button @click="toggleShopStage">Toggle Shop Stage</button>
+                    <product-list :products="products"
+                    :searchQuery="searchQuery"
+                    :cart="cart"
+                    :shopStage="shopStage"
+                    @proceedCheckout="toggleShopStage"
+                    @add-to-cart="updateCart"
+                    @remove-from-cart="updateCart">
+                    </product-list>
+
+                    <checkout :cart="cart"
+                    :checkout-stage="checkoutStage"
+                    @reset-cart="resetCart"
+                    @go-back="toggleShopStage"
+                    @remove-from-cart="updateCart"
+                    ></checkout>
+                    </div> 
                 </div>
-            </div>
+                `,
+                components: {
+                    'product-list': ProductList,
+                    'checkout': Checkout,
+                },
+                data() {
+                    return {
+                    products: [], // the array of products
+                    searchQuery: '',
+                    cart: {
+                        products: [],
+                        quantities: [],
+                        total: 0,
+                    },
+                        checkoutStage: false,
+                        shopStage: true,
+                    };
+                },
+                methods: {
+                    toggleShopStage() {
+                        this.shopStage = !this.shopStage;
+                        this.checkoutStage = !this.checkoutStage;
+                    },
+                    resetCart() {
+                        this.cart.products = [];
+                        this.cart.quantities = [];
+                        this.cart.total = 0;
+                    },
+                    search() {
+                        if (this.searchBarData.length > 0) {
+                            fetch(`http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.searchBarData}/5`)
+                            .then(response => response.json())
+                            .then(data => {
+                                this.searchResults = data.map(item => item.name);
+                                this.products = data.map(item => item);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                        }else{
+                            this.searchResults = [];
+                            this.getLessons();
+                        }
+                    },
+                    getLessons: function () {
+                        this.loading = true;
+                        fetch('http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.products = data;
+                            this.loading = false;
+                            console.log(this.products);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.loading = false;
+                        });
+                    },
+                    autocomplete() {
+                        if (this.searchResults.length > 0) {
+                            this.searchQuery = this.searchResults[0];
+                        }
+                    },
+                    proceedCheckout() {
+                        this.checkoutStage = true;
+                        this.shopStage = false;
+                    },
+                    updateCart(product, quantity) {
+console.log('updateCart called:', product, quantity);
+                        if (quantity > 0) {
+                            if (this.cart.products.includes(product)) {
+                                console.log('includes product');
+                                const index = this.cart.products.indexOf(product);
+                                this.cart.quantities[index] += quantity;
+                            } else {
+                                console.log('NOT includes product');
+                                this.cart.products.push(product);
+                                this.cart.quantities.push(quantity);
+                            }
+                        } else {
+                            const index = this.cart.products.indexOf(product);
+                            if (this.cart.quantities[index] === 1) {
+                                this.cart.products.splice(index, 1);
+                                this.cart.quantities.splice(index, 1);
+                            } else {
+                                this.cart.quantities[index] += quantity;
+                            }
+                        }
+                        this.cart.total += product.price * quantity;
+
+                        product.availability -= quantity;
+                        this.$emit("update-product-availability", this.products);
+                                console.log(JSON.stringify(this.cart));
+                    },
+                },
+                mounted() {
+                    this.getLessons();
+                },
+            };
 
 
-<!-- 
-    checkout reads the array of products inside the cart, and prints them with the quantity, multiplying the product price with the quantity to get each sum of prices
- -->
-            <div id="checkout" v-show="checkoutStage">
-                <div class="contentContainer">
-                    <div class="container" v-for="(item, index) in cart.product">
-                        <div class="row">
-                            <div>
-                                <img :src="item.image" alt="image">
-                            </div>
-                            <div class="col">
-                                <p><h3>Subject: {{item.name}}, {{item.location}}<span v-class='item.icon'></span></h3></p>
-                                <p>Quantity: {{cart.quantity[index]}}</p>
-                                <p>Total price: {{item.price * cart.quantity[index]}}</p>
-                            </div>
-                            <div class="col">
-                                <button class="btn btn-primary" @click="removeFromCart(index)">Remove from cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <script type="application/javascript" src="./products.js"></script>
-    <script type="application/javascript" src="./vueCode.js"></script>
+
+     new Vue({
+        el: '#app',
+        components: {
+        App
+        },
+        template: '<App/>'
+    });
+</script>
 </body>
 </html>
