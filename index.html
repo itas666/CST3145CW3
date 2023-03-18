@@ -150,7 +150,7 @@
                     },
                     search() {
                         if (this.searchBarData.length > 0) {
-                            fetch(`http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.searchBarData}/5`)
+                            fetch(`https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons/search/${this.searchBarData}/5`)
                             .then(response => response.json())
                             .then(data => {
                                 this.searchResults = data.map(item => item.name);
@@ -166,7 +166,7 @@
                     },
                     getLessons: function () {
                         this.loading = true;
-                        fetch('http://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
+                        fetch('https://coursework2-env.eba-ik4mpxmi.us-east-1.elasticbeanstalk.com/lessons')
                         .then(response => response.json())
                         .then(data => {
                             this.products = data;
